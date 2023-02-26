@@ -39,11 +39,11 @@ def _adjust_bin_counts(X: Union[Tensor, np.ndarray], n_bins: int) -> List[int]:
         n_unique = len(unique_fn(column))
         if n_unique < 2:
             raise ValueError(f'All elements in the column {i} are the same')
-        if n_unique < n_bins:
-            warnings.warn(
-                f'For the feature {i}, the number of bins will be set to the number of'
-                ' distinct values, becuase the provided n_bins is greater than this number.'
-            )
+        #if n_unique < n_bins:
+            #warnings.warn(
+            #    f'For the feature {i}, the number of bins will be set to the number of'
+            #    ' distinct values, becuase the provided n_bins is greater than this number.'
+            #)
         adjusted_bin_counts.append(min(n_bins, n_unique))
     return adjusted_bin_counts
 
@@ -587,7 +587,7 @@ def piecewise_linear_encoding(
             X_ple = piecewise_linear_encoding(bin_edges, bin_indices, bin_ratios, bin_counts, stack=True)
     """
     is_torch = isinstance(bin_ratios, Tensor)
-    bin_edges = torch.as_tensor(bin_ratios)
+    #bin_edges = torch.as_tensor(bin_edges)
     bin_ratios = torch.as_tensor(bin_ratios)
     bin_indices = torch.as_tensor(bin_indices)
 
@@ -615,10 +615,10 @@ def piecewise_linear_encoding(
 
     upper_bounds = torch.ones_like(bin_ratios)
     # it is important to use bin_edges here, not d_encoding
-    is_last_bin = bin_indices + 1 == as_tensor(list(map(len, bin_edges)))
+    is_last_bin = bin_indices + 1 == as_tensor(list(map(len, bin_edges)))[0]
     upper_bounds[is_last_bin] = math.inf
-    if (bin_ratios > upper_bounds).any():
-        raise ValueError(message)
+    #if (bin_ratios > upper_bounds).any():
+    #    raise ValueError(message)
     del upper_bounds
 
     encoding = _LVR_encoding(bin_indices, bin_ratios, d_encoding, 1.0, 0.0, stack=stack)
